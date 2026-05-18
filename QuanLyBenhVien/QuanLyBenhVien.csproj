@@ -96,6 +96,7 @@
     <Compile Include="ChuyenVienYTe\KetQuaXetNhiem.Designer.cs">
       <DependentUpon>KetQuaXetNhiem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Class1.cs" />
     <Compile Include="Doctor\ChuanDoan.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -120,11 +121,11 @@
     <Compile Include="LeTan\DichVu.Designer.cs">
       <DependentUpon>DichVu.cs</DependentUpon>
     </Compile>
-    <Compile Include="DichVuTraTruoc.cs">
+    <Compile Include="KETOAN\PhieuThuTamUng.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DichVuTraTruoc.Designer.cs">
-      <DependentUpon>DichVuTraTruoc.cs</DependentUpon>
+    <Compile Include="KETOAN\PhieuThuTamUng.Designer.cs">
+      <DependentUpon>PhieuThuTamUng.cs</DependentUpon>
     </Compile>
     <Compile Include="KETOAN\KeToan.cs">
       <SubType>Form</SubType>
@@ -194,8 +195,8 @@
     <EmbeddedResource Include="LeTan\DichVu.resx">
       <DependentUpon>DichVu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DichVuTraTruoc.resx">
-      <DependentUpon>DichVuTraTruoc.cs</DependentUpon>
+    <EmbeddedResource Include="KETOAN\PhieuThuTamUng.resx">
+      <DependentUpon>PhieuThuTamUng.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="KETOAN\KeToan.resx">
       <DependentUpon>KeToan.cs</DependentUpon>

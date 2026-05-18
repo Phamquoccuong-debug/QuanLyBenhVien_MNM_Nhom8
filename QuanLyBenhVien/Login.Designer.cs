@@ -58,6 +58,7 @@
             this.uiLabel1.Size = new System.Drawing.Size(254, 67);
             this.uiLabel1.TabIndex = 1;
             this.uiLabel1.Text = "Đăng nhập";
+            this.uiLabel1.Click += new System.EventHandler(this.uiLabel1_Click);
             // 
             // uiLabel2
             // 

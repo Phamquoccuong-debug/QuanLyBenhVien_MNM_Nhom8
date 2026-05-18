@@ -66,12 +66,11 @@ namespace QuanLyBenhVien
 
             foreach (DichVuItem item in dsChuyen)
             {
-                checkedListBox2.Items.Add(item, true); // Chuyển sang Box 2
-                checkedListBox1.Items.Remove(item);    // Xóa khỏi Box 1
+                checkedListBox2.Items.Add(item, true); 
+                checkedListBox1.Items.Remove(item);    
             }
         }
 
-        // Hoàn tác - Chuyển các mục được check từ Box 2 ngược lại Box 1
         private void button2_Click(object sender, EventArgs e)
         {
             List<DichVuItem> dsHoanTac = new List<DichVuItem>();
@@ -82,15 +81,15 @@ namespace QuanLyBenhVien
 
             foreach (DichVuItem item in dsHoanTac)
             {
-                checkedListBox1.Items.Add(item); // Trả lại Box 1
-                checkedListBox2.Items.Remove(item); // Xóa khỏi Box 2
+                checkedListBox1.Items.Add(item); 
+                checkedListBox2.Items.Remove(item); 
             }
         }
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             
         }
-        // Tìm kiếm và hiển thị danh sách gốc lên DataGridView để tham khảo
+        
         private void button3_Click(object sender, EventArgs e)
         {
             using (SqlConnection conn = new SqlConnection(str))
@@ -106,7 +105,6 @@ namespace QuanLyBenhVien
             }
         }
 
-        //Duyệt toàn bộ dịch vụ đã chuyển ở Box 2 để lưu vào Database
         private void button4_Click(object sender, EventArgs e)
         {
             if (checkedListBox2.Items.Count == 0)
@@ -119,22 +117,22 @@ namespace QuanLyBenhVien
             {
                 conn.Open();
                 
-                string query = "INSERT INTO KHAMBENH_DICHVU(MaKB, MaDV) VALUES (@kb, @dv)";
+                string query = "INSERT INTO KHAMBENH_DICHVU(MaKB, MaDV, LoaiChiTra) VALUES (@kb, @dv, 'Tự nguyện')";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     // Duyệt qua toàn bộ các dịch vụ có trong Box 2 (đã chốt chọn)
                     foreach (DichVuItem item in checkedListBox2.Items)
                     {
-                        cmd.Parameters.AddWithValue("@kb", textBox2.Text.Trim()); // Lấy đúng Mã Khám Bệnh
-                        cmd.Parameters.AddWithValue("@dv", item.MaDV);             // Lấy đúng Mã Dịch Vụ từ Object
+                        cmd.Parameters.AddWithValue("@kb", textBox2.Text.Trim()); 
+                        cmd.Parameters.AddWithValue("@dv", item.MaDV);             
 
                         cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear(); 
                     }
                 }
             }
-            MessageBox.Show("Lưu chỉ định dịch vụ thành công!");
+            MessageBox.Show("Lưu dịch vụ yêu câu thành công!");
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls.Expressions;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace QuanLyBenhVien
 {
@@ -46,9 +47,9 @@ namespace QuanLyBenhVien
                 conn.Open();
                 // thêm vào bảng bệnh nhân
                 string query1 = "insert into BENHNHAN(MaBN, HotenBN, Ngaysinh, Gioitinh, Diachi, Dienthoai) " +
-                    "values (MaBN = @cccd, HotenBN = @ten, Ngaysinh = @ns, Gioitinh = @gt, @Diachi = @dc, Dienthoai = @dt)";
+                    "values (@cccd,@ten, @ns, @gt,@dc,@dt)";
                 SqlCommand cmd = new SqlCommand(query1, conn);
-                cmd.Parameters.AddWithValue("@cc", CCCD);
+                cmd.Parameters.AddWithValue("@cccd", CCCD);
                 cmd.Parameters.AddWithValue("@ten", TenBN);
                 cmd.Parameters.AddWithValue("@ns", NS);
                 cmd.Parameters.AddWithValue("@gt", GT);
@@ -57,20 +58,22 @@ namespace QuanLyBenhVien
                 cmd.ExecuteNonQuery();
 
                 // them thông tin người nhà
-                string query2 = "insert into NGUOINHA(HotenNN, QuanHe, Diachi, Dienthoai, MaBN) " +
-                    "(values HotenNN = @tennn, QuanHe = @qh, Diachi = @dc, Dienthoai = @dt, MaBN = @cc)";
-                SqlCommand cmd2 = new SqlCommand(query2, conn);
-                cmd2.Parameters.AddWithValue("@tennn", TenNN);
-                cmd2.Parameters.AddWithValue("@qh", QH);
-                cmd2.Parameters.AddWithValue("@dc", dc);
-                cmd2.Parameters.AddWithValue("@dt", dt);
-                cmd2.Parameters.AddWithValue("@cc", CCCD);
-
+                if (String.IsNullOrEmpty(TenNN)) 
+                {
+                    string query2 = "insert into NGUOINHA(HotenNN, QuanHe, Diachi, Dienthoai, MaBN) " +
+                        "values (@tennn,@qh,@dc,@dt,@cccd)";
+                    SqlCommand cmd2 = new SqlCommand(query2, conn);
+                    cmd2.Parameters.AddWithValue("@tennn", TenNN);
+                    cmd2.Parameters.AddWithValue("@qh", QH);
+                    cmd2.Parameters.AddWithValue("@dc", dc);
+                    cmd2.Parameters.AddWithValue("@dt", dt);
+                    cmd2.Parameters.AddWithValue("@cccd", CCCD);
+                }
                 //Thêm thông tin thẻ BHYT
-                if (BHYT != null)
+                if (String.IsNullOrEmpty(BHYT))
                 {
                     string query3 = "insert into BHYT(MaBHYT,NgayCap,NgayHetHan,MucHuong, MaBN) " +
-                        "values (MaBHYT = @bh, NgayCap = @nc, NgayHetHan = @nhh, MucHuong = @mh,MaBN = @cccd)";
+                        "values (@bh, @nc,@nhh,@mh, @cccd)";
 
                     SqlCommand cmd3 = new SqlCommand(query3, conn);
                     cmd3.Parameters.AddWithValue("@bh", BHYT);
@@ -154,17 +157,20 @@ namespace QuanLyBenhVien
             {
                 string gt = radioButton1.Checked ? "Nam" : "Nữ";
                 conn.Open();
-                string query = "update BENHNHAN set HotenBN = @ten, Ngaysinh = @ns, Gioitinh = @gt, @Diachi = @dc, Dienthoai = @dt where MaBN = @cccd";
+
+                string query = "update BENHNHAN set HotenBN = @ten, Ngaysinh = @ns, Gioitinh = @gt, Diachi = @dc, Dienthoai = @dt where MaBN = @cccd";
+
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@cc", txtCCCD.Text);
+
+                cmd.Parameters.AddWithValue("@cccd", txtCCCD.Text);
                 cmd.Parameters.AddWithValue("@ten", txtTenBN.Text);
                 cmd.Parameters.AddWithValue("@ns", dtNgaySinh.Text);
                 cmd.Parameters.AddWithValue("@gt", gt);
                 cmd.Parameters.AddWithValue("@dc", txtDiachi.Text);
                 cmd.Parameters.AddWithValue("@dt", txtDienThoai.Text);
+
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Cập nhật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
             }
         }
 
@@ -173,13 +179,13 @@ namespace QuanLyBenhVien
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                string query2 = "update NGUOINHA set HotenNN = @tennn, QuanHe = @qh, Diachi = @dc, Dienthoai = @dt where MaBN = @cc)";
+                string query2 = "update NGUOINHA set HotenNN = @tennn, QuanHe = @qh, Diachi = @dc, Dienthoai = @dt where MaBN = @cc";
                 SqlCommand cmd2 = new SqlCommand(query2, conn);
-                cmd2.Parameters.AddWithValue("@tennn", txtTenNN);
-                cmd2.Parameters.AddWithValue("@qh", txtQH);
-                cmd2.Parameters.AddWithValue("@dc", txtDC);
-                cmd2.Parameters.AddWithValue("@dt", txtDT);
-                cmd2.Parameters.AddWithValue("@cc", txtCCCD);
+                cmd2.Parameters.AddWithValue("@tennn", txtTenNN.Text);
+                cmd2.Parameters.AddWithValue("@qh", txtQH.Text);
+                cmd2.Parameters.AddWithValue("@dc", txtDC.Text);
+                cmd2.Parameters.AddWithValue("@dt", txtDT.Text);
+                cmd2.Parameters.AddWithValue("@cc", txtCCCD.Text);
                 cmd2.ExecuteNonQuery();
                 MessageBox.Show("Cập nhật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -193,12 +199,51 @@ namespace QuanLyBenhVien
                             "set MaBHYT = @bh, NgayCap = @nc, NgayHetHan = @nhh, MucHuong = @m where MaBN = @cccd";
 
                 SqlCommand cmd3 = new SqlCommand(query3, conn);
-                cmd3.Parameters.AddWithValue("@bh",txtBHYT );
-                cmd3.Parameters.AddWithValue("@nc", dtNgayCap);
-                cmd3.Parameters.AddWithValue("@nhh", dtNgayHet);
+                cmd3.Parameters.AddWithValue("@bh",txtBHYT.Text );
+                cmd3.Parameters.AddWithValue("@nc", dtNgayCap.Text);
+                cmd3.Parameters.AddWithValue("@nhh", dtNgayHet.Text);
                 cmd3.Parameters.AddWithValue("@mh", comboBox1.Text);
                 cmd3.ExecuteNonQuery();
                 MessageBox.Show("Cập nhật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void btnTK_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection conn = new SqlConnection(str))
+            {
+                string query = "Select * from BENHNHAN where MaBN = @mabn";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@mabn",textBox10.Text);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                dataGridView1.DataSource = dt;
+            }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+
+
+                if (row.Cells[0].Value != null)
+                {
+                    txtCCCD.Text = row.Cells[0].Value.ToString();
+                    txtTenBN.Text = row.Cells[1].Value.ToString();
+                    dtNgaySinh.Value = DateTime.Parse(row.Cells[2].Value.ToString());
+                    string gt = row.Cells[3].Value.ToString();
+                    if (gt == "Nam")
+                    {
+                        radioButton1.Checked = true;
+                    }
+                    else radioButton2.Checked = true;
+                    txtDiachi.Text = row.Cells[4].Value.ToString();
+                    txtDienThoai.Text = row.Cells[5].Value.ToString();
+                }
             }
         }
     }

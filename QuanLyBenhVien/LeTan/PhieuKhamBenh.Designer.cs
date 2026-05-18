@@ -36,7 +36,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.txtMaPK = new System.Windows.Forms.TextBox();
             this.txtTrieuChung = new System.Windows.Forms.TextBox();
             this.txtBHYT = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,12 +44,15 @@
             this.txtLK = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.txtMaBS = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtCCCD = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -124,13 +126,6 @@
             this.dateTimePicker1.Size = new System.Drawing.Size(200, 22);
             this.dateTimePicker1.TabIndex = 26;
             // 
-            // txtMaPK
-            // 
-            this.txtMaPK.Location = new System.Drawing.Point(439, 231);
-            this.txtMaPK.Name = "txtMaPK";
-            this.txtMaPK.Size = new System.Drawing.Size(171, 22);
-            this.txtMaPK.TabIndex = 25;
-            // 
             // txtTrieuChung
             // 
             this.txtTrieuChung.Location = new System.Drawing.Point(905, 111);
@@ -165,11 +160,11 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(296, 173);
+            this.label3.Location = new System.Drawing.Point(297, 223);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 16);
+            this.label3.Size = new System.Drawing.Size(46, 16);
             this.label3.TabIndex = 16;
-            this.label3.Text = "Mã bác sĩ";
+            this.label3.Text = "Bác sĩ";
             // 
             // txtLK
             // 
@@ -181,11 +176,11 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(260, 237);
+            this.label4.Location = new System.Drawing.Point(260, 258);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(103, 16);
+            this.label4.Size = new System.Drawing.Size(82, 16);
             this.label4.TabIndex = 15;
-            this.label4.Text = "Mã phòng khám";
+            this.label4.Text = "Phòng khám";
             // 
             // label5
             // 
@@ -195,13 +190,6 @@
             this.label5.Size = new System.Drawing.Size(69, 16);
             this.label5.TabIndex = 14;
             this.label5.Text = "Loại khám";
-            // 
-            // txtMaBS
-            // 
-            this.txtMaBS.Location = new System.Drawing.Point(439, 170);
-            this.txtMaBS.Name = "txtMaBS";
-            this.txtMaBS.Size = new System.Drawing.Size(171, 22);
-            this.txtMaBS.TabIndex = 24;
             // 
             // label6
             // 
@@ -246,11 +234,48 @@
             this.label7.TabIndex = 18;
             this.label7.Text = "Mã BHYT";
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(439, 164);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 24);
+            this.comboBox1.TabIndex = 33;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(439, 215);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(121, 24);
+            this.comboBox2.TabIndex = 34;
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(439, 255);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(121, 24);
+            this.comboBox3.TabIndex = 34;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(297, 172);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(38, 16);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "Khoa";
+            // 
             // PhieuKhamBenh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1510, 771);
+            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label11);
@@ -258,16 +283,15 @@
             this.Controls.Add(this.label10);
             this.Controls.Add(this.dateTimePicker2);
             this.Controls.Add(this.dateTimePicker1);
-            this.Controls.Add(this.txtMaPK);
             this.Controls.Add(this.txtTrieuChung);
             this.Controls.Add(this.txtBHYT);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtMG);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtLK);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.txtMaBS);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtCCCD);
             this.Controls.Add(this.label9);
@@ -292,7 +316,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.TextBox txtMaPK;
         private System.Windows.Forms.TextBox txtTrieuChung;
         private System.Windows.Forms.TextBox txtBHYT;
         private System.Windows.Forms.Label label2;
@@ -301,11 +324,14 @@
         private System.Windows.Forms.TextBox txtLK;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox txtMaBS;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtCCCD;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.Label label12;
     }
 }

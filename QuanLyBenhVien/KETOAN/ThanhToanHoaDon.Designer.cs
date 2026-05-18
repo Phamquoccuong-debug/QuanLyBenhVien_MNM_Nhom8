@@ -58,11 +58,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(274, 12);
+            this.label1.Location = new System.Drawing.Point(400, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(577, 42);
+            this.label1.Size = new System.Drawing.Size(322, 42);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Thanh toán hóa đơn khám bệnh";
+            this.label1.Text = "Phiếu thu dịch vụ";
             // 
             // textBox1
             // 
@@ -157,6 +157,7 @@
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // label10
             // 
@@ -209,8 +210,9 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(164, 33);
             this.button3.TabIndex = 3;
-            this.button3.Text = "Lập hóa đơn";
+            this.button3.Text = "Lập phiếu thu";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // textBox4
             // 
@@ -276,6 +278,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ThanhToanHoaDon";
             this.Size = new System.Drawing.Size(1525, 720);
+            this.Load += new System.EventHandler(this.ThanhToanHoaDon_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

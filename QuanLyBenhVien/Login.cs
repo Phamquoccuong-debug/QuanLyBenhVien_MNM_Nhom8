@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using QuanLyBenhVien.admin;
+using Sunny.UI.Win32;
+using QuanLyBenhVien.ChuyenVienYTe;
 
 namespace QuanLyBenhVien
 {
@@ -16,6 +18,8 @@ namespace QuanLyBenhVien
     {
         string str = @"Data Source=DESKTOP-L182KS3\SQLEXPRESS;Initial Catalog=QuanLyBenhVien;Integrated Security=True";
 
+        public static string maNV_DangNhap { get; set; }
+        public static string hoTenNV_DangNhap { get; set; }
         public Login()
         {
             InitializeComponent();
@@ -29,57 +33,112 @@ namespace QuanLyBenhVien
         private void uiButton1_Click(object sender, EventArgs e)
         {
 
+           
             string username = uiTextBox1.Text.Trim();
             string password = uiTextBox2.Text.Trim();
 
-            using (SqlConnection connection = new SqlConnection(str))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                connection.Open();
-                string query = "select COUNT(*) form TAIKHOAN where Username = @U, Password = @P";
+                MessageBox.Show("Vui lòng nhập đầy đủ tài khoản và mật khẩu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                SqlCommand cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("@U", username);
-                cmd.Parameters.AddWithValue("P", password);
+           
+            string query = @"
+        SELECT 
+            NV.HotenNV, 
+            TK.MaNV,
+            TK.Role
+        FROM TAIKHOAN TK
+        INNER JOIN NHANVIEN NV ON TK.MaNV = NV.MaNV
+        WHERE TK.Username = @Username AND TK.Password = @Password";
 
-                cmd.ExecuteNonQuery();
+            using (SqlConnection conn = new SqlConnection(str))
+            {
+                SqlCommand cmd = new SqlCommand(query, conn);
+     
+                cmd.Parameters.AddWithValue("@Username", username);
+                cmd.Parameters.AddWithValue("@Password", password);
 
-                int count = (int)cmd.ExecuteScalar();
-                if (count > 0)
+                try
                 {
-                    string query2 = "select role from TAIKHOAN where Username = @U, Password = @P";
-                    SqlCommand cmd2 = new SqlCommand(query2, connection);
-                    cmd.Parameters.AddWithValue("@U", username);
-                    cmd.Parameters.AddWithValue("P", password);
-                    using (SqlDataReader reader = cmd2.ExecuteReader())
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            string role = reader["role"].ToString();
+                            
+                             maNV_DangNhap = reader["MaNV"].ToString();
+                             hoTenNV_DangNhap = reader["HotenNV"].ToString();
+                             string role = reader["Role"].ToString();
+
+                            MessageBox.Show($"Đăng nhập thành công!\nXin chào: {hoTenNV_DangNhap}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                             if (role == "Lễ tân")
+
                             {
+
                                 Nurse form = new Nurse();
                                 form.ShowDialog();
+                                this.Close();
                             }
-                            else if(role =="Kế toán")
+
+                            else if (role == "Kế toán")
+
                             {
+
                                 KeToan form = new KeToan();
+                                form.manv = maNV_DangNhap;
                                 form.ShowDialog();
+                                this.Close ();
                             }
-                            else if(role == "Bác sĩ")
+
+                            else if (role == "Bác sĩ")
+
                             {
+
                                 BacSi form = new BacSi();
+                                form.manv = maNV_DangNhap;
                                 form.ShowDialog();
+                                this.Close ();
+                            }
+
+                            else if(role == "admin")
+                            {
+
+                                CRUD form = new CRUD();
+
+                                form.ShowDialog();
+                                this.Close();
 
                             }
-                            else(role == "admin"){
-                                CRUD form = new CRUD();
+                            else if(role == "Chuyên viên y tế")
+                            {
+                                KetQuaXetNhiem form = new KetQuaXetNhiem();
+                                form.manv = maNV_DangNhap;
+                                form.tennv = hoTenNV_DangNhap;
                                 form.ShowDialog();
+                                this.Close();
                             }
+                            
+                        }
+                        else // Sai tài khoản hoặc mật khẩu
+                        {
+                            MessageBox.Show("Tên đăng nhập hoặc mật khẩu không chính xác!", "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
-
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi kết nối CSDL: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+        
+
+        private void uiLabel1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

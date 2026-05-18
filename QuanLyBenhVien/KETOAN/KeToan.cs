@@ -12,6 +12,7 @@ namespace QuanLyBenhVien
 {
     public partial class KeToan : Form
     {
+        public string manv;
         public KeToan()
         {
             InitializeComponent();
@@ -29,18 +30,25 @@ namespace QuanLyBenhVien
             // 2. Kiểm tra xem người dùng nhấn vào task nào (dựa vào Text hoặc Index)
             switch (node.Text)
             {
-                case "Thanh toán":
+                case "Thanh toán hóa đơn":
                     ThanhToanHoaDon uc = new ThanhToanHoaDon();
+                    uc.manv = manv;
                     uc.Dock = DockStyle.Fill;
-                    pnlMain.Controls.Add(uc); // Đưa giao diện bệnh nhân vào bên phải
+                    pnlMain.Controls.Add(uc);
                     break;
 
-                case "Xếp giường":
-                    NhapVien uckho = new NhapVien();
+                case "Phiếu thu tạm ứng":
+                    PhieuThuTamUng uckho = new PhieuThuTamUng();
+                    uckho.manv = manv;
                     uckho.Dock = DockStyle.Fill;
                     pnlMain.Controls.Add(uckho);
                     break;
             }
+        }
+
+        private void KeToan_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

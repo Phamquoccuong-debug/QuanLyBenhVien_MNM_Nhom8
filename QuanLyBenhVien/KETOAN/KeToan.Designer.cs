@@ -28,8 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Thanh toán");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Đăng xuất");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Phiếu thu tạm ứng");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Thanh toán hóa đơn");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Đăng xuất");
             this.pnlMain = new Sunny.UI.UIPanel();
             this.uiNavMenu1 = new Sunny.UI.UINavMenu();
             this.SuspendLayout();
@@ -59,13 +60,16 @@
             this.uiNavMenu1.ItemHeight = 50;
             this.uiNavMenu1.Location = new System.Drawing.Point(0, 0);
             this.uiNavMenu1.Name = "uiNavMenu1";
-            treeNode1.Name = "ThanhToan";
-            treeNode1.Text = "Thanh toán";
-            treeNode2.Name = "DangXuat";
-            treeNode2.Text = "Đăng xuất";
+            treeNode1.Name = "PhieuThuTamUng";
+            treeNode1.Text = "Phiếu thu tạm ứng";
+            treeNode2.Name = "ThanhToanHoaDon";
+            treeNode2.Text = "Thanh toán hóa đơn";
+            treeNode3.Name = "DangXuat";
+            treeNode3.Text = "Đăng xuất";
             this.uiNavMenu1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
-            treeNode2});
+            treeNode2,
+            treeNode3});
             this.uiNavMenu1.ShowLines = false;
             this.uiNavMenu1.ShowPlusMinus = false;
             this.uiNavMenu1.ShowRootLines = false;
@@ -83,6 +87,7 @@
             this.Controls.Add(this.uiNavMenu1);
             this.Name = "KeToan";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.KeToan_Load);
             this.ResumeLayout(false);
 
         }

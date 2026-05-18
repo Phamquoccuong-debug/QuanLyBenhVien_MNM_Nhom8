@@ -82,6 +82,7 @@ namespace QuanLyBenhVien
                 if (row.Cells[0].Value != null)
                 {
                     string maPhongBenh = row.Cells[0].Value.ToString();
+                    textBox1.Text = maPhongBenh;
 
                     // 3. Tiến hành truy vấn lấy danh sách giường trống dựa vào maPhongBenh vừa lấy được
                     LoadGiuongTrong(maPhongBenh);
@@ -119,6 +120,28 @@ namespace QuanLyBenhVien
                     MessageBox.Show("Lỗi khi tải danh sách giường: " + ex.Message);
                 }
             }
+        }
+
+        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dataGridView2.Rows[e.RowIndex];
+
+
+                if (row.Cells[0].Value != null)
+                {
+                    maskedTextBox1.Text = row.Cells[0].Value.ToString();
+                    maskedTextBox2.Text = row.Cells[1].Value.ToString();
+
+
+                }
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
     

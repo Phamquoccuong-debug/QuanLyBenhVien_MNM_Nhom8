@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Khám bệnh");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Chỉ định dịch vụ ");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Chỉ định dịch vụ");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Đăng xuất");
             this.pnlMain = new Sunny.UI.UIPanel();
             this.uiNavMenu1 = new Sunny.UI.UINavMenu();
@@ -47,6 +47,7 @@
             this.pnlMain.TabIndex = 5;
             this.pnlMain.Text = "uiPanel1";
             this.pnlMain.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.pnlMain.Click += new System.EventHandler(this.pnlMain_Click);
             // 
             // uiNavMenu1
             // 
@@ -62,7 +63,7 @@
             treeNode1.Name = "KhamBenh";
             treeNode1.Text = "Khám bệnh";
             treeNode2.Name = "ChiDinhDichVu";
-            treeNode2.Text = "Chỉ định dịch vụ ";
+            treeNode2.Text = "Chỉ định dịch vụ";
             treeNode3.Name = "DangXuat";
             treeNode3.Text = "Đăng xuất";
             this.uiNavMenu1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
@@ -75,6 +76,7 @@
             this.uiNavMenu1.Size = new System.Drawing.Size(252, 734);
             this.uiNavMenu1.TabIndex = 4;
             this.uiNavMenu1.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.uiNavMenu1.MenuItemClick += new Sunny.UI.UINavMenu.OnMenuItemClick(this.uiNavMenu1_MenuItemClick);
             // 
             // BacSi
             // 
@@ -85,6 +87,7 @@
             this.Controls.Add(this.uiNavMenu1);
             this.Name = "BacSi";
             this.Text = "BacSi";
+            this.Load += new System.EventHandler(this.BacSi_Load);
             this.ResumeLayout(false);
 
         }

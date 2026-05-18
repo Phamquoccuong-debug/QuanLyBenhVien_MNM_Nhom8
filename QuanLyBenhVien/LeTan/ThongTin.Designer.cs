@@ -371,10 +371,10 @@
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
-            "100%",
-            "80%",
-            "50%",
-            "25%"});
+            "1",
+            "0.75",
+            "0.5",
+            "0.25"});
             this.comboBox1.Location = new System.Drawing.Point(177, 220);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 33);
@@ -465,6 +465,7 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(692, 290);
             this.dataGridView1.TabIndex = 11;
+            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
             // btnTK
             // 
@@ -474,6 +475,7 @@
             this.btnTK.TabIndex = 12;
             this.btnTK.Text = "Tìm kiếm";
             this.btnTK.UseVisualStyleBackColor = true;
+            this.btnTK.Click += new System.EventHandler(this.btnTK_Click);
             // 
             // button1
             // 
