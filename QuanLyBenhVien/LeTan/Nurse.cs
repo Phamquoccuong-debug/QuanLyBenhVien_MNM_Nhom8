@@ -36,6 +36,12 @@ namespace QuanLyBenhVien
                     uckho.Dock = DockStyle.Fill;
                     pnlMain.Controls.Add(uckho);
                     break;
+
+                case "Đăng xuất":
+                    Login form = new Login();
+                    this.Hide();
+                    form.ShowDialog();
+                    break;
             }
         }
 

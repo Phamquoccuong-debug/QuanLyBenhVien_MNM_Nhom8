@@ -58,7 +58,7 @@ namespace QuanLyBenhVien
                 cmd.ExecuteNonQuery();
 
                 // them thông tin người nhà
-                if (String.IsNullOrEmpty(TenNN)) 
+                if (!String.IsNullOrEmpty(TenNN)) 
                 {
                     string query2 = "insert into NGUOINHA(HotenNN, QuanHe, Diachi, Dienthoai, MaBN) " +
                         "values (@tennn,@qh,@dc,@dt,@cccd)";
@@ -70,7 +70,7 @@ namespace QuanLyBenhVien
                     cmd2.Parameters.AddWithValue("@cccd", CCCD);
                 }
                 //Thêm thông tin thẻ BHYT
-                if (String.IsNullOrEmpty(BHYT))
+                if (!String.IsNullOrEmpty(BHYT))
                 {
                     string query3 = "insert into BHYT(MaBHYT,NgayCap,NgayHetHan,MucHuong, MaBN) " +
                         "values (@bh, @nc,@nhh,@mh, @cccd)";

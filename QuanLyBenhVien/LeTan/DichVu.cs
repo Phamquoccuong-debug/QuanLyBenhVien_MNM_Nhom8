@@ -109,30 +109,41 @@ namespace QuanLyBenhVien
         {
             if (checkedListBox2.Items.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn ít nhất một dịch vụ trước khi lưu!");
+                MessageBox.Show("Vui lòng chọn ít nhất một dịch vụ trước khi lưu!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(textBox2.Text.Trim(), out int maKB))
+            {
+                MessageBox.Show("Mã khám bệnh không hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
+
                 
-                string query = "INSERT INTO KHAMBENH_DICHVU(MaKB, MaDV, LoaiChiTra) VALUES (@kb, @dv, 'Tự nguyện')";
+                string query = @"
+                                  INSERT INTO KHAMBENH_DICHVU (MaKB, MaDV, LoaiChiTra, DonGiaBan)
+                                  SELECT @kb, @dv, N'Tự nguyện', DonGia
+                                  FROM DICHVU
+                                  WHERE MaDV = @dv";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    // Duyệt qua toàn bộ các dịch vụ có trong Box 2 (đã chốt chọn)
+                    cmd.Parameters.AddWithValue("@kb", maKB);
+                    cmd.Parameters.Add("@dv", SqlDbType.Int);
+
                     foreach (DichVuItem item in checkedListBox2.Items)
                     {
-                        cmd.Parameters.AddWithValue("@kb", textBox2.Text.Trim()); 
-                        cmd.Parameters.AddWithValue("@dv", item.MaDV);             
+                        cmd.Parameters["@dv"].Value = item.MaDV;
 
                         cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear(); 
                     }
                 }
             }
-            MessageBox.Show("Lưu dịch vụ yêu câu thành công!");
+            MessageBox.Show("Lưu dịch vụ yêu cầu thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

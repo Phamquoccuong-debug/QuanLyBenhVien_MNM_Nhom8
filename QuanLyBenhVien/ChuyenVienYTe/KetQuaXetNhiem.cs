@@ -23,14 +23,17 @@ namespace QuanLyBenhVien.ChuyenVienYTe
 
         private void KetQuaXetNhiem_Load(object sender, EventArgs e)
         {
-            textBox2.Text = manv;
-            textBox3.Text = tennv;
+            textBox2.Text = tennv;
+            textBox3.Text = manv ;
             using(SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
                 string query = "select MaDV, TenDV from DICHVU";
                 SqlCommand sqlCommand = new SqlCommand(query, conn);
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand);
                 DataTable dt = new DataTable();
+                adapter.Fill(dt);
+
                 comboBox1.DataSource = dt;
                 comboBox1.DisplayMember = "TenDV";
                 comboBox1.ValueMember = "MaDV";
@@ -45,7 +48,7 @@ namespace QuanLyBenhVien.ChuyenVienYTe
                 string query = "insert into KETQUA_LAMSANG(MaKB,MaDV,NgayThucHien,KetQua,NguoiThucHien) " +
                     "values(@makb,@madv,GETDATE(),@kq,@ngth)";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@makb", textBox4.Text);
+                cmd.Parameters.AddWithValue("@makb", textBox6.Text);
                 cmd.Parameters.AddWithValue("@madv", comboBox1.SelectedValue);
                 cmd.Parameters.AddWithValue("@kq",textBox1.Text);
                 cmd.Parameters.AddWithValue("ngth",textBox3.Text);
@@ -59,7 +62,9 @@ namespace QuanLyBenhVien.ChuyenVienYTe
             DialogResult res = MessageBox.Show("Bạn có muốn thoát","Thông báo",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
             if (res == DialogResult.Yes)
             {
-                
+                Login form = new Login();
+                Application.Exit();
+                form.ShowDialog();
             }
         }
 
@@ -68,6 +73,7 @@ namespace QuanLyBenhVien.ChuyenVienYTe
             textBox4.Clear();
             textBox6.Clear();
             textBox5.Clear();
+            textBox1.Clear();
         }
     }
 }

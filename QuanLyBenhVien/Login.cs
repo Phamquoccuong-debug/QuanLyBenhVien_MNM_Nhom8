@@ -79,8 +79,9 @@ namespace QuanLyBenhVien
                             {
 
                                 Nurse form = new Nurse();
+                                this.Hide();
                                 form.ShowDialog();
-                                this.Close();
+                                
                             }
 
                             else if (role == "Kế toán")
@@ -89,8 +90,9 @@ namespace QuanLyBenhVien
 
                                 KeToan form = new KeToan();
                                 form.manv = maNV_DangNhap;
+                                this.Hide();
                                 form.ShowDialog();
-                                this.Close ();
+                                
                             }
 
                             else if (role == "Bác sĩ")
@@ -99,17 +101,18 @@ namespace QuanLyBenhVien
 
                                 BacSi form = new BacSi();
                                 form.manv = maNV_DangNhap;
+                                this.Hide();
                                 form.ShowDialog();
-                                this.Close ();
+                                
                             }
 
                             else if(role == "admin")
                             {
 
                                 CRUD form = new CRUD();
-
+                                this.Hide();
                                 form.ShowDialog();
-                                this.Close();
+                                
 
                             }
                             else if(role == "Chuyên viên y tế")
@@ -117,8 +120,9 @@ namespace QuanLyBenhVien
                                 KetQuaXetNhiem form = new KetQuaXetNhiem();
                                 form.manv = maNV_DangNhap;
                                 form.tennv = hoTenNV_DangNhap;
+                                this.Hide();
                                 form.ShowDialog();
-                                this.Close();
+                                
                             }
                             
                         }

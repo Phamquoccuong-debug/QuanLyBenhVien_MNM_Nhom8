@@ -11,9 +11,11 @@ using System.Windows.Forms;
 
 namespace QuanLyBenhVien
 {
+
     public partial class ThanhToanHoaDon : UserControl
     {
-        public string manv {  get; set; }
+        string str = @"Data Source=DESKTOP-L182KS3\SQLEXPRESS;Initial Catalog=QuanLyBenhVien;Integrated Security=True";
+        public string manv { get; set; }
         public ThanhToanHoaDon()
         {
             InitializeComponent();
@@ -21,31 +23,30 @@ namespace QuanLyBenhVien
 
         private void ThanhToanHoaDon_Load(object sender, EventArgs e)
         {
-
+            textBox5.Text = manv;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-         
-            
+
+
             if (!int.TryParse(textBox1.Text, out int maKB))
             {
                 MessageBox.Show("Vui lòng nhập Mã Khám Bệnh hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            
+
             double mucHuong = 0;
             if (textBox6.Text != null)
             {
                 double.TryParse(textBox6.Text, out mucHuong);
-                
+
             }
 
-            int maNhanVienThu = 1; // Giả sử ID của nhân viên đang đăng nhập là 1
-            string connectionString = "Data Source=TenMayCuaBan;Initial Catalog=QuanLyBenhVien;Integrated Security=True";
+            int maNhanVienThu = int.Parse(manv);
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
                 SqlTransaction transaction = conn.BeginTransaction(); // Bắt đầu Transaction an toàn
@@ -83,7 +84,7 @@ namespace QuanLyBenhVien
                             tongTienDichVu = Convert.ToDouble(reader["TongTienDichVu"]);
                             tongTienPhaiTra = Convert.ToDouble(reader["TongTienPhaiTra"]);
                         }
-                    } 
+                    }
                     if (soLuongDV == 0)
                     {
                         MessageBox.Show("Bệnh nhân này không có dịch vụ nào cần thanh toán!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -91,11 +92,11 @@ namespace QuanLyBenhVien
                         return;
                     }
 
-                    
-                    textBox4.Text = tongTienDichVu.ToString("N0"); 
-                    textBox7.Text = tongTienPhaiTra.ToString("N0"); 
 
-                    
+                    textBox4.Text = tongTienDichVu.ToString("N0");
+                    textBox7.Text = tongTienPhaiTra.ToString("N0");
+
+
                     string queryInsert = @"
                 INSERT INTO PHIEUTHU (MaKB, LoaiPhieu, SoTien, NgayLap, NguoiThu) 
                 VALUES (@MaKB, N'Thanh toán dịch vụ', @SoTienPhaiTra, GETDATE(), @NguoiThu);
@@ -108,7 +109,7 @@ namespace QuanLyBenhVien
 
                     int newMaPhieu = Convert.ToInt32(cmdInsert.ExecuteScalar());
 
-                    
+
                     string queryUpdate = @"
                 UPDATE KHAMBENH_DICHVU 
                 SET TrangThai = N'Đã thanh toán', MaPhieu = @MaPhieu 
@@ -135,6 +136,70 @@ namespace QuanLyBenhVien
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            string query = "SELECT DV.MaDV,DV.TenDV,KBDV.SoLuong, KBDV.DonGiaBan,KBDV.TrangThai FROM KHAMBENH_DICHVU KBDV INNER JOIN DICHVU DV ON KBDV.MaDV = DV.MaDV WHERE KBDV.MaKB = @MaKB ";
+            using (SqlConnection conn = new SqlConnection(str))
+            {
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@MaKB", textBox1.Text);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+
+                try
+                {
+                    conn.Open();
+                    da.Fill(dt);
+                    dataGridView1.DataSource = dt;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi tải danh sách dịch vụ: " + ex.Message);
+                }
+            }
+            TinhTongTienDichVu_SQL(int.Parse(textBox1.Text));
+        }
+        private void TinhTongTienDichVu_SQL(int maKB)
+        {
+            // Câu lệnh SQL sử dụng hàm SUM để tính tổng thành tiền
+            string query = @"
+        SELECT SUM(DonGiaBan) AS TongTien 
+        FROM KHAMBENH_DICHVU 
+        WHERE MaKB = @MaKB";
+
+            using (SqlConnection conn = new SqlConnection(str))
+            {
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@MaKB", maKB);
+
+                try
+                {
+                    conn.Open();
+                    // Sử dụng ExecuteScalar vì câu lệnh chỉ trả về đúng 1 ô dữ liệu duy nhất
+                    object result = cmd.ExecuteScalar();
+
+                    // Kiểm tra xem kết quả có bị NULL không (Trường hợp lượt khám chưa chọn dịch vụ nào)
+                    if (result != DBNull.Value && result != null)
+                    {
+                        double tongTien = Convert.ToDouble(result);
+
+                        // Đổ dữ liệu vào TextBox kèm định dạng dấu chấm phân cách hàng nghìn cho đẹp (Ví dụ: 350.000)
+                        textBox4.Text = tongTien.ToString("N0");
+                    }
+                    else
+                    {
+                        textBox4.Text = "0";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi tính tổng tiền: " + ex.Message);
+                }
+            }
         }
     }
 }

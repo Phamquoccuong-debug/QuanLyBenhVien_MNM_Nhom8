@@ -30,7 +30,7 @@
         {
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Thông tin bệnh nhân");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Xếp giường");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("DangXuat");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Đăng xuất");
             this.uiNavMenu1 = new Sunny.UI.UINavMenu();
             this.pnlMain = new Sunny.UI.UIPanel();
             this.SuspendLayout();
@@ -51,7 +51,7 @@
             treeNode2.Name = "XepGiuong";
             treeNode2.Text = "Xếp giường";
             treeNode3.Name = "DangXuat";
-            treeNode3.Text = "DangXuat";
+            treeNode3.Text = "Đăng xuất";
             this.uiNavMenu1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
@@ -78,14 +78,14 @@
             this.pnlMain.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.pnlMain.Click += new System.EventHandler(this.pnlMain_Click);
             // 
-            // Form1
+            // Nurse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1129, 663);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.uiNavMenu1);
-            this.Name = "Form1";
+            this.Name = "Nurse";
             this.Text = "Form1";
             this.ResumeLayout(false);
 

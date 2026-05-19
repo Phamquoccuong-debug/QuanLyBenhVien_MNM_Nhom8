@@ -50,6 +50,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox10 = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +70,7 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Xuất phiếu kết quả";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox6
             // 
@@ -111,7 +114,7 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Kê thuốc";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
             // 
             // button3
             // 
@@ -233,7 +236,7 @@
             // 
             // textBox9
             // 
-            this.textBox9.Location = new System.Drawing.Point(877, 50);
+            this.textBox9.Location = new System.Drawing.Point(877, 26);
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(159, 22);
             this.textBox9.TabIndex = 12;
@@ -241,17 +244,35 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(761, 53);
+            this.label8.Location = new System.Drawing.Point(765, 29);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(86, 16);
             this.label8.TabIndex = 7;
             this.label8.Text = "Mã nhân viên";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(45, 94);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(95, 16);
+            this.label9.TabIndex = 11;
+            this.label9.Text = "Mã khám bệnh";
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(877, 61);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(159, 22);
+            this.textBox10.TabIndex = 12;
+            // 
             // ChuanDoan
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.textBox10);
             this.Controls.Add(this.textBox9);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button4);
@@ -299,5 +320,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox10;
     }
 }
