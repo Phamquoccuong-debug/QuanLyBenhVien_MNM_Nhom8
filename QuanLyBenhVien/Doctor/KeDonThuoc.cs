@@ -95,6 +95,7 @@ namespace QuanLyBenhVien
                 MessageBox.Show("Đơn thuốc chưa có loại thuốc nào!", "Thông báo");
                 return;
             }
+            //test
 
             using (SqlConnection conn = new SqlConnection(str))
             {
