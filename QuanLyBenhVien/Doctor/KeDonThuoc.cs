@@ -124,7 +124,7 @@ namespace QuanLyBenhVien
                         string cachDung = row.Cells["CachDung"].Value.ToString();
 
                         // HÀNH ĐỘNG 2: Insert vào bảng CHITIET_DONTHUOC
-                        string queryChiTiet = @"INSERT INTO CHITIET_DONTHUOC (MaDonThuoc, MaThuoc, SoLuong, DonGiaBan, CachDung) 
+                        string queryChiTiet = @"INSERT INTO CT_DONTHUOC (MaDonThuoc, MaThuoc, SoLuong, DonGiaBan, CachDung) 
                                         VALUES (@madon, @mathuoc, @soluong, @dongia, @cachdung)";
                         SqlCommand cmdCT = new SqlCommand(queryChiTiet, conn, transaction);
                         cmdCT.Parameters.AddWithValue("@madon", maDonThuocVuaTao);
@@ -204,6 +204,11 @@ namespace QuanLyBenhVien
             }
             // Mở file word lên
             System.Diagnostics.Process.Start(exportPath);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
     

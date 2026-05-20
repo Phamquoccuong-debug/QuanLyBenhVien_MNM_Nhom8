@@ -26,10 +26,12 @@ namespace QuanLyBenhVien
             using(SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                string query = "INSERT INTO PHIEUTHU(MaKB, LoaiPhieu, SoTien, NgayLap) VALUES(@MaKB, N'Tạm ứng', @SoTienNhapVao, GETDATE())";
+                string query = "INSERT INTO PHIEUTHU(MaKB, LoaiPhieu, SoTien, NgayLap, NguoiThu) VALUES(@MaKB, N'Tạm ứng', @SoTienNhapVao,@nl,@nt)";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@MaKB", textBox1.Text);
                 cmd.Parameters.AddWithValue("SoTienNhapVao", textBox2.Text);
+                cmd.Parameters.AddWithValue("@nt",textBox3.Text);
+                cmd.Parameters.AddWithValue("@nl", dateTimePicker1.Text);
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Thanh toán thành công","Thông báo",MessageBoxButtons.OK,MessageBoxIcon.Information);
 

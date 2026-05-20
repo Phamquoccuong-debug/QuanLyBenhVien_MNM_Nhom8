@@ -51,7 +51,7 @@
             this.MaThuoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenThuoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoLuong = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DonGia = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DonGiaBan = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ThanhTien = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CachDung = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -115,7 +115,7 @@
             this.MaThuoc,
             this.TenThuoc,
             this.SoLuong,
-            this.DonGia,
+            this.DonGiaBan,
             this.ThanhTien,
             this.CachDung});
             this.dataGridView1.Location = new System.Drawing.Point(479, 224);
@@ -171,6 +171,7 @@
             this.button3.TabIndex = 8;
             this.button3.Text = "Xuất đơn thuốc";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // label6
             // 
@@ -265,12 +266,12 @@
             this.SoLuong.Name = "SoLuong";
             this.SoLuong.Width = 125;
             // 
-            // DonGia
+            // DonGiaBan
             // 
-            this.DonGia.HeaderText = "Đơn giá";
-            this.DonGia.MinimumWidth = 6;
-            this.DonGia.Name = "DonGia";
-            this.DonGia.Width = 125;
+            this.DonGiaBan.HeaderText = "Đơn giá";
+            this.DonGiaBan.MinimumWidth = 6;
+            this.DonGiaBan.Name = "DonGiaBan";
+            this.DonGiaBan.Width = 125;
             // 
             // ThanhTien
             // 
@@ -345,7 +346,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn MaThuoc;
         private System.Windows.Forms.DataGridViewTextBoxColumn TenThuoc;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoLuong;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DonGia;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DonGiaBan;
         private System.Windows.Forms.DataGridViewTextBoxColumn ThanhTien;
         private System.Windows.Forms.DataGridViewTextBoxColumn CachDung;
     }
