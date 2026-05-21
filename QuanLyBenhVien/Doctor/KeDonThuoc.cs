@@ -177,6 +177,7 @@ namespace QuanLyBenhVien
                     MessageBox.Show("Đơn thuốc đã lưu thành công nhưng không thể xuất file Word: " + ex.Message, "Lỗi xuất file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+            //
         }
         private void XuatDonThuocRaWord(int maDonThuoc)
         {
