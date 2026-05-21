@@ -246,6 +246,7 @@
             // 
             // MaThuoc
             // 
+            this.MaThuoc.DataPropertyName = "MaThuoc";
             this.MaThuoc.HeaderText = "Mã thuốc";
             this.MaThuoc.MinimumWidth = 6;
             this.MaThuoc.Name = "MaThuoc";
@@ -261,6 +262,7 @@
             // 
             // SoLuong
             // 
+            this.SoLuong.DataPropertyName = "SoLuong";
             this.SoLuong.HeaderText = "Số lượng";
             this.SoLuong.MinimumWidth = 6;
             this.SoLuong.Name = "SoLuong";
@@ -268,6 +270,7 @@
             // 
             // DonGiaBan
             // 
+            this.DonGiaBan.DataPropertyName = "DonGiaBan";
             this.DonGiaBan.HeaderText = "Đơn giá";
             this.DonGiaBan.MinimumWidth = 6;
             this.DonGiaBan.Name = "DonGiaBan";

@@ -89,71 +89,92 @@ namespace QuanLyBenhVien
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
-            if (dataGridView1.Rows.Count == 0)
+            if (dataGridView1.Rows.Count == 0 || (dataGridView1.Rows.Count == 1 && dataGridView1.Rows[0].IsNewRow))
             {
-                MessageBox.Show("Đơn thuốc chưa có loại thuốc nào!", "Thông báo");
+                MessageBox.Show("Đơn thuốc chưa có loại thuốc nào!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            //test
 
+            int maDonThuocVuaTao = 0;
+            bool isDatabaseSuccess = false;
+
+            // --- PHẦN 1: LÀM VIỆC VỚI CƠ SỞ DỮ LIỆU (DATABASE TRANSACTION) ---
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-               
                 SqlTransaction transaction = conn.BeginTransaction();
 
                 try
                 {
                     string queryDonThuoc = @"INSERT INTO DONTHUOC (MaKB) VALUES (@makb);
-                                     SELECT SCOPE_IDENTITY();"; 
+                                     SELECT SCOPE_IDENTITY();";
 
                     SqlCommand cmdDon = new SqlCommand(queryDonThuoc, conn, transaction);
                     cmdDon.Parameters.AddWithValue("@makb", Convert.ToInt32(textBox1.Text));
-                    
 
-                    int maDonThuocVuaTao = Convert.ToInt32(cmdDon.ExecuteScalar());
+                    maDonThuocVuaTao = Convert.ToInt32(cmdDon.ExecuteScalar());
 
-                    
+                    string queryChiTiet = @"INSERT INTO CT_DONTHUOC (MaDonThuoc, MaThuoc, SoLuong, DonGiaBan, CachDung) 
+                                    VALUES (@madon, @mathuoc, @soluong, @dongia, @cachdung)";
+                    SqlCommand cmdCT = new SqlCommand(queryChiTiet, conn, transaction);
+                    cmdCT.Parameters.Add("@madon", SqlDbType.Int).Value = maDonThuocVuaTao;
+                    cmdCT.Parameters.Add("@mathuoc", SqlDbType.Int);
+                    cmdCT.Parameters.Add("@soluong", SqlDbType.Int);
+                    cmdCT.Parameters.Add("@dongia", SqlDbType.Decimal);
+                    cmdCT.Parameters.Add("@cachdung", SqlDbType.NVarChar);
+
+                    string queryTruKho = "UPDATE THUOC SET SoLuongTon = SoLuongTon - @soluong WHERE MaThuoc = @mathuoc";
+                    SqlCommand cmdKho = new SqlCommand(queryTruKho, conn, transaction);
+                    cmdKho.Parameters.Add("@soluong", SqlDbType.Int);
+                    cmdKho.Parameters.Add("@mathuoc", SqlDbType.Int);
+
                     foreach (DataGridViewRow row in dataGridView1.Rows)
                     {
                         if (row.IsNewRow) continue;
+                        if (row.Cells["MaThuoc"].Value == null || row.Cells["SoLuong"].Value == null) continue;
 
                         int maThuoc = Convert.ToInt32(row.Cells["MaThuoc"].Value);
                         int soLuong = Convert.ToInt32(row.Cells["SoLuong"].Value);
-                        double donGia = Convert.ToDouble(row.Cells["DonGiaBan"].Value);
-                        string cachDung = row.Cells["CachDung"].Value.ToString();
+                        double donGia = row.Cells["DonGiaBan"].Value != null ? Convert.ToDouble(row.Cells["DonGiaBan"].Value) : 0;
+                        string cachDung = row.Cells["CachDung"].Value != null ? row.Cells["CachDung"].Value.ToString() : "";
 
-                        // HÀNH ĐỘNG 2: Insert vào bảng CHITIET_DONTHUOC
-                        string queryChiTiet = @"INSERT INTO CT_DONTHUOC (MaDonThuoc, MaThuoc, SoLuong, DonGiaBan, CachDung) 
-                                        VALUES (@madon, @mathuoc, @soluong, @dongia, @cachdung)";
-                        SqlCommand cmdCT = new SqlCommand(queryChiTiet, conn, transaction);
-                        cmdCT.Parameters.AddWithValue("@madon", maDonThuocVuaTao);
-                        cmdCT.Parameters.AddWithValue("@mathuoc", maThuoc);
-                        cmdCT.Parameters.AddWithValue("@soluong", soLuong);
-                        cmdCT.Parameters.AddWithValue("@dongia", donGia);
-                        cmdCT.Parameters.AddWithValue("@cachdung", cachDung);
+                        cmdCT.Parameters["@mathuoc"].Value = maThuoc;
+                        cmdCT.Parameters["@soluong"].Value = soLuong;
+                        cmdCT.Parameters["@dongia"].Value = donGia;
+                        cmdCT.Parameters["@cachdung"].Value = cachDung;
                         cmdCT.ExecuteNonQuery();
 
-                        
-                        string queryTruKho = "UPDATE THUOC SET SoLuongTon = SoLuongTon - @soluong WHERE MaThuoc = @mathuoc";
-                        SqlCommand cmdKho = new SqlCommand(queryTruKho, conn, transaction);
-                        cmdKho.Parameters.AddWithValue("@soluong", soLuong);
-                        cmdKho.Parameters.AddWithValue("@mathuoc", maThuoc);
+                        cmdKho.Parameters["@soluong"].Value = soLuong;
+                        cmdKho.Parameters["@mathuoc"].Value = maThuoc;
                         cmdKho.ExecuteNonQuery();
                     }
 
+                    // Lưu thành công vào DB thì commit tại đây
                     transaction.Commit();
-                    MessageBox.Show("Kê đơn thuốc thành công! Hệ thống đã tự động trừ kho dược.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    isDatabaseSuccess = true;
 
-                    
+                    MessageBox.Show("Kê đơn thuốc thành công! Hệ thống đã tự động trừ kho dược.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    // Chỉ rollback khi DB thực sự gặp lỗi trong quá trình lưu
+                    transaction.Rollback();
+                    MessageBox.Show("Lỗi lưu đơn thuốc vào CSDL: " + ex.Message, "Thao tác thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return; // Dừng chương trình, không chạy tiếp phần xuất Word
+                }
+            }
+
+            // --- PHẦN 2: XUẤT FILE WORD (NẰM NGOÀI TRANSACTION) ---
+            if (isDatabaseSuccess)
+            {
+                try
+                {
                     XuatDonThuocRaWord(maDonThuocVuaTao);
                 }
                 catch (Exception ex)
                 {
-                    
-                    transaction.Rollback();
-                    MessageBox.Show("Lỗi lưu đơn thuốc: " + ex.Message, "Thao tác thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Nếu có lỗi ở đây, bạn sẽ nhìn thấy đúng lỗi thực sự của hàm Word (ví dụ: thiếu thư viện, sai template...)
+                    MessageBox.Show("Đơn thuốc đã lưu thành công nhưng không thể xuất file Word: " + ex.Message, "Lỗi xuất file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -176,8 +197,8 @@ namespace QuanLyBenhVien
 
                 // Lấy dữ liệu chi tiết đơn thuốc từ SQL lên
                 string query = @"SELECT KT.TenThuoc, KT.DonViTinh, CT.SoLuong, CT.CachDung 
-                         FROM CHITIET_DONTHUOC CT 
-                         JOIN KHO_THUOC KT ON CT.MaThuoc = KT.MaThuoc 
+                         FROM CT_DONTHUOC CT 
+                         JOIN THUOC KT ON CT.MaThuoc = KT.MaThuoc 
                          WHERE CT.MaDonThuoc = @madon";
 
                 using (SqlConnection conn = new SqlConnection(str))
