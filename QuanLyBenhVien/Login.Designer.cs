@@ -68,7 +68,7 @@
             this.uiLabel2.Name = "uiLabel2";
             this.uiLabel2.Size = new System.Drawing.Size(204, 67);
             this.uiLabel2.TabIndex = 1;
-            this.uiLabel2.Text = "Đăng nhập";
+            this.uiLabel2.Text = "Username";
             // 
             // uiLabel3
             // 
@@ -78,7 +78,7 @@
             this.uiLabel3.Name = "uiLabel3";
             this.uiLabel3.Size = new System.Drawing.Size(204, 67);
             this.uiLabel3.TabIndex = 1;
-            this.uiLabel3.Text = "Đăng nhập";
+            this.uiLabel3.Text = "Password";
             // 
             // uiTextBox1
             // 

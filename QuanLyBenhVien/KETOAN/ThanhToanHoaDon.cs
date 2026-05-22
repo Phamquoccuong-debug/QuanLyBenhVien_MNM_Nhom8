@@ -94,7 +94,6 @@ namespace QuanLyBenhVien
 
                     newMaPhieu = Convert.ToInt32(cmdInsert.ExecuteScalar());
 
-                    // SỬA LỖI: Cập nhật thêm MaPhieu vào bảng dịch vụ để quản lý tài chính rạch ròi
                     string queryUpdate = @"
                 UPDATE KHAMBENH_DICHVU 
                 SET TrangThai = N'Đã thanh toán'

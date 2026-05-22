@@ -21,7 +21,37 @@ namespace QuanLyBenhVien
 
         private void NhapVien_Load(object sender, EventArgs e)
         {
-            
+            using (SqlConnection conn = new SqlConnection(str))
+            {
+                try
+                {
+                    conn.Open();
+
+                    string query = "SELECT * " +
+                                   "FROM KHOA";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+                        comboBox1.DataSource = dt;
+                        comboBox1.DisplayMember = "TenKhoa";
+                        comboBox1.ValueMember = "MaKhoa";
+
+                        if (dt.Rows.Count == 0)
+                        {
+                            MessageBox.Show("Khoa này hiện chưa có phòng bệnh nào!");
+                            dataGridView2.DataSource = null;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi tải danh sách phòng: " + ex.Message);
+                }
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -91,7 +121,7 @@ namespace QuanLyBenhVien
         
         }
 
-        // Hàm phụ để tải giường bệnh lên dataGridView2
+       
         private void LoadGiuongTrong(string maPhong)
         {
             using (SqlConnection conn = new SqlConnection(str))
@@ -111,7 +141,7 @@ namespace QuanLyBenhVien
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
 
-                        // Đổ dữ liệu vào dataGridView2 (Danh sách giường trống)
+                        
                         dataGridView2.DataSource = dt;
                     }
                 }

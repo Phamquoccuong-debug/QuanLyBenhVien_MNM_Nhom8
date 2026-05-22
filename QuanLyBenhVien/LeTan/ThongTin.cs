@@ -16,79 +16,106 @@ namespace QuanLyBenhVien
     public partial class ThongTin : UserControl
     {
         string str = @"Data Source=DESKTOP-L182KS3\SQLEXPRESS;Initial Catalog=QuanLyBenhVien;Integrated Security=True";
-        
-        //public static class DuLieu
-        //{
-        //    public static string MaBN { get; set; }
-        //}
-        
-        // Them benh nhan vao trong database
+
         public void ThemBenhNhan()
         {
-            string TenBN = txtTenBN.Text;
-            string CCCD = txtCCCD.Text;
+            string TenBN = txtTenBN.Text.Trim();
+            string CCCD = txtCCCD.Text.Trim();
             string GT = radioButton1.Checked ? "Nam" : "Nữ";
             string NS = dtNgaySinh.Text;
-            string DC = txtDiachi.Text;
-            string DT = txtDienThoai.Text;
+            string DC = txtDiachi.Text.Trim();
+            string DT = txtDienThoai.Text.Trim();
 
-            string TenNN = txtTenNN.Text;
-            string QH = txtQH.Text;
-            string dc = txtDC.Text;
-            string dt = txtDT.Text;
+            string TenNN = txtTenNN.Text.Trim();
+            string QH = txtQH.Text.Trim();
+            string dc = txtDC.Text.Trim();
+            string dt = txtDT.Text.Trim();
 
-            string BHYT = txtBHYT.Text;
+            string BHYT = txtBHYT.Text.Trim();
             string NC = dtNgayCap.Text;
             string NHH = dtNgayHet.Text;
             string MH = comboBox1.Text;
 
+            // Ràng buộc cơ bản: Không được để trống CCCD/MaBN
+            if (string.IsNullOrEmpty(CCCD))
+            {
+                MessageBox.Show("Vui lòng nhập số CCCD/Mã bệnh nhân!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                // thêm vào bảng bệnh nhân
-                string query1 = "insert into BENHNHAN(MaBN, HotenBN, Ngaysinh, Gioitinh, Diachi, Dienthoai) " +
-                    "values (@cccd,@ten, @ns, @gt,@dc,@dt)";
-                SqlCommand cmd = new SqlCommand(query1, conn);
-                cmd.Parameters.AddWithValue("@cccd", CCCD);
-                cmd.Parameters.AddWithValue("@ten", TenBN);
-                cmd.Parameters.AddWithValue("@ns", NS);
-                cmd.Parameters.AddWithValue("@gt", GT);
-                cmd.Parameters.AddWithValue("@dc", DC);
-                cmd.Parameters.AddWithValue("@dt", DT);
-                cmd.ExecuteNonQuery();
 
-                // them thông tin người nhà
-                if (!String.IsNullOrEmpty(TenNN)) 
+                string queryCheck = "SELECT COUNT(*) FROM BENHNHAN WHERE MaBN = @cccd";
+                using (SqlCommand cmdCheck = new SqlCommand(queryCheck, conn))
                 {
-                    string query2 = "insert into NGUOINHA(HotenNN, QuanHe, Diachi, Dienthoai, MaBN) " +
-                        "values (@tennn,@qh,@dc,@dt,@cccd)";
-                    SqlCommand cmd2 = new SqlCommand(query2, conn);
-                    cmd2.Parameters.AddWithValue("@tennn", TenNN);
-                    cmd2.Parameters.AddWithValue("@qh", QH);
-                    cmd2.Parameters.AddWithValue("@dc", dc);
-                    cmd2.Parameters.AddWithValue("@dt", dt);
-                    cmd2.Parameters.AddWithValue("@cccd", CCCD);
-                }
-                //Thêm thông tin thẻ BHYT
-                if (!String.IsNullOrEmpty(BHYT))
-                {
-                    string query3 = "insert into BHYT(MaBHYT,NgayCap,NgayHetHan,MucHuong, MaBN) " +
-                        "values (@bh, @nc,@nhh,@mh, @cccd)";
+                    cmdCheck.Parameters.AddWithValue("@cccd", CCCD);
+                    int count = Convert.ToInt32(cmdCheck.ExecuteScalar());
 
-                    SqlCommand cmd3 = new SqlCommand(query3, conn);
-                    cmd3.Parameters.AddWithValue("@bh", BHYT);
-                    cmd3.Parameters.AddWithValue("@nc", NC);
-                    cmd3.Parameters.AddWithValue("@nhh", NHH);
-                    cmd3.Parameters.AddWithValue("@mh", MH);
-                    cmd3.Parameters.AddWithValue("@cccd", CCCD);
-                    cmd3.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        MessageBox.Show($"Bệnh nhân có số CCCD '{CCCD}' đã tồn tại trong hệ thống!", "Cảnh báo trùng lặp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; 
+                    }
                 }
 
+                SqlTransaction transaction = conn.BeginTransaction();
 
-                MessageBox.Show("Thêm bệnh nhân thành công","Thông báo",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                try
+                {
+                    
+                    string query1 = "insert into BENHNHAN(MaBN, HotenBN, Ngaysinh, Gioitinh, Diachi, Dienthoai) " +
+                                    "values (@cccd,@ten, @ns, @gt,@dc,@dt)";
+                    SqlCommand cmd = new SqlCommand(query1, conn, transaction);
+                    cmd.Parameters.AddWithValue("@cccd", CCCD);
+                    cmd.Parameters.AddWithValue("@ten", TenBN);
+                    cmd.Parameters.AddWithValue("@ns", NS);
+                    cmd.Parameters.AddWithValue("@gt", GT);
+                    cmd.Parameters.AddWithValue("@dc", DC);
+                    cmd.Parameters.AddWithValue("@dt", DT);
+                    cmd.ExecuteNonQuery();
 
+                    // 2. Thêm thông tin người nhà (Đã sửa lỗi quên ExecuteNonQuery)
+                    if (!String.IsNullOrEmpty(TenNN))
+                    {
+                        string query2 = "insert into NGUOINHA(HotenNN, QuanHe, Diachi, Dienthoai, MaBN) " +
+                                        "values (@tennn,@qh,@dc,@dt,@cccd)";
+                        SqlCommand cmd2 = new SqlCommand(query2, conn, transaction);
+                        cmd2.Parameters.AddWithValue("@tennn", TenNN);
+                        cmd2.Parameters.AddWithValue("@qh", QH);
+                        cmd2.Parameters.AddWithValue("@dc", dc);
+                        cmd2.Parameters.AddWithValue("@dt", dt);
+                        cmd2.Parameters.AddWithValue("@cccd", CCCD);
+
+                        cmd2.ExecuteNonQuery();
+                    }
+
+                    if (!String.IsNullOrEmpty(BHYT))
+                    {
+                        string query3 = "insert into BHYT(MaBHYT,NgayCap,NgayHetHan,MucHuong, MaBN) " +
+                                        "values (@bh, @nc,@nhh,@mh, @cccd)";
+
+                        SqlCommand cmd3 = new SqlCommand(query3, conn, transaction);
+                        cmd3.Parameters.AddWithValue("@bh", BHYT);
+                        cmd3.Parameters.AddWithValue("@nc", NC);
+                        cmd3.Parameters.AddWithValue("@nhh", NHH);
+                        cmd3.Parameters.AddWithValue("@mh", MH);
+                        cmd3.Parameters.AddWithValue("@cccd", CCCD);
+                        cmd3.ExecuteNonQuery();
+                    }
+
+                    
+                    transaction.Commit();
+                    MessageBox.Show("Thêm bệnh nhân thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    
+                    transaction.Rollback();
+                    MessageBox.Show("Đã xảy ra lỗi khi lưu dữ liệu: " + ex.Message, "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-
         }
         public ThongTin()
         {
@@ -155,6 +182,7 @@ namespace QuanLyBenhVien
         {
             using (SqlConnection conn = new SqlConnection(str))
             {
+                conn.Open();
                 string gt = radioButton1.Checked ? "Nam" : "Nữ";
                 conn.Open();
 
@@ -176,35 +204,100 @@ namespace QuanLyBenhVien
 
         private void btnCNNN_Click(object sender, EventArgs e)
         {
+            
+            if (string.IsNullOrEmpty(txtTenNN.Text.Trim()))
+            {
+                MessageBox.Show("Vui lòng nhập họ tên người nhà!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
-                string query2 = "update NGUOINHA set HotenNN = @tennn, QuanHe = @qh, Diachi = @dc, Dienthoai = @dt where MaBN = @cc";
-                SqlCommand cmd2 = new SqlCommand(query2, conn);
-                cmd2.Parameters.AddWithValue("@tennn", txtTenNN.Text);
-                cmd2.Parameters.AddWithValue("@qh", txtQH.Text);
-                cmd2.Parameters.AddWithValue("@dc", txtDC.Text);
-                cmd2.Parameters.AddWithValue("@dt", txtDT.Text);
-                cmd2.Parameters.AddWithValue("@cc", txtCCCD.Text);
-                cmd2.ExecuteNonQuery();
-                MessageBox.Show("Cập nhật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Sử dụng câu lệnh SQL tích hợp kiểm tra: IF EXISTS ... UPDATE ... ELSE ... INSERT
+                string query = @"
+            IF EXISTS (SELECT 1 FROM NGUOINHA WHERE MaBN = @cc)
+            BEGIN
+                -- Nếu đã tồn tại người nhà của MaBN này, tiến hành UPDATE
+                UPDATE NGUOINHA 
+                SET HotenNN = @tennn, QuanHe = @qh, Diachi = @dc, Dienthoai = @dt 
+                WHERE MaBN = @cc
+            END
+            ELSE
+            BEGIN
+                -- Nếu chưa có, tiến hành INSERT mới
+                INSERT INTO NGUOINHA (HotenNN, QuanHe, Diachi, Dienthoai, MaBN)
+                VALUES (@tennn, @qh, @dc, @dt, @cc)
+            END";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@tennn", txtTenNN.Text.Trim());
+                cmd.Parameters.AddWithValue("@qh", txtQH.Text.Trim());
+                cmd.Parameters.AddWithValue("@dc", txtDC.Text.Trim());
+                cmd.Parameters.AddWithValue("@dt", txtDT.Text.Trim());
+                cmd.Parameters.AddWithValue("@cc", txtCCCD.Text.Trim());
+
+                
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    MessageBox.Show("Cập nhật thông tin người nhà thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể cập nhật. Vui lòng kiểm tra lại mã bệnh nhân!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnCNBHYT_Click(object sender, EventArgs e)
         {
+            
+            if (string.IsNullOrEmpty(txtBHYT.Text.Trim()))
+            {
+                MessageBox.Show("Vui lòng nhập số thẻ BHYT!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(str))
             {
-                string query3 = "update BHYT " +
-                            "set MaBHYT = @bh, NgayCap = @nc, NgayHetHan = @nhh, MucHuong = @m where MaBN = @cccd";
+                conn.Open();
+                string query = @"
+            IF EXISTS (SELECT 1 FROM BHYT WHERE MaBN = @cccd)
+            BEGIN
+                -- Đã tồn tại thông tin BHYT cho bệnh nhân này, tiến hành cập nhật
+                UPDATE BHYT 
+                SET MaBHYT = @bh, NgayCap = @nc, NgayHetHan = @nhh, MucHuong = @mh 
+                WHERE MaBN = @cccd
+            END
+            ELSE
+            BEGIN
+                -- Bệnh nhân này trước đó chưa nhập BHYT, tiến hành thêm mới
+                INSERT INTO BHYT (MaBHYT, NgayCap, NgayHetHan, MucHuong, MaBN)
+                VALUES (@bh, @nc, @nhh, @mh, @cccd)
+            END";
 
-                SqlCommand cmd3 = new SqlCommand(query3, conn);
-                cmd3.Parameters.AddWithValue("@bh",txtBHYT.Text );
-                cmd3.Parameters.AddWithValue("@nc", dtNgayCap.Text);
-                cmd3.Parameters.AddWithValue("@nhh", dtNgayHet.Text);
-                cmd3.Parameters.AddWithValue("@mh", comboBox1.Text);
-                cmd3.ExecuteNonQuery();
-                MessageBox.Show("Cập nhật thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SqlCommand cmd = new SqlCommand(query, conn);
+
+                
+                cmd.Parameters.AddWithValue("@bh", txtBHYT.Text.Trim());
+                cmd.Parameters.AddWithValue("@nc", dtNgayCap.Text);
+                cmd.Parameters.AddWithValue("@nhh", dtNgayHet.Text);
+                cmd.Parameters.AddWithValue("@mh", comboBox1.Text.Trim());
+                cmd.Parameters.AddWithValue("@cccd", txtCCCD.Text.Trim());
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    MessageBox.Show("Cập nhật thông tin thẻ BHYT thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể thực hiện. Vui lòng kiểm tra lại mã bệnh nhân!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -212,13 +305,37 @@ namespace QuanLyBenhVien
         {
             using (SqlConnection conn = new SqlConnection(str))
             {
-                string query = "Select * from BENHNHAN where MaBN = @mabn";
+                
+                string query = @"
+        SELECT 
+            bn.MaBN AS [Mã BN (CCCD)],
+            bn.HotenBN AS [Họ tên BN],
+            bn.Ngaysinh AS [Ngày sinh],
+            bn.Gioitinh AS [Giới tính],
+            bn.Diachi AS [Địa chỉ BN],
+            bn.Dienthoai AS [SĐT BN],
+            
+            bh.MaBHYT AS [Mã BHYT],
+            bh.NgayCap AS [Ngày cấp BHYT],
+            bh.NgayHetHan AS [Ngày hết hạn BHYT],
+            bh.MucHuong AS [Mức hưởng %],
+            
+            nn.HotenNN AS [Họ tên Người nhà],
+            nn.QuanHe AS [Quan hệ],
+            nn.Diachi AS [Địa chỉ NN],
+            nn.Dienthoai AS [SĐT NN]
+        FROM BENHNHAN bn
+        LEFT JOIN BHYT bh ON bn.MaBN = bh.MaBN
+        LEFT JOIN NGUOINHA nn ON bn.MaBN = nn.MaBN
+        WHERE bn.MaBN = @mabn";
+
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@mabn",textBox10.Text);
+                cmd.Parameters.AddWithValue("@mabn", textBox10.Text.Trim());
 
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
+
                 dataGridView1.DataSource = dt;
             }
         }
@@ -229,21 +346,38 @@ namespace QuanLyBenhVien
             {
                 DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
 
+                
+                txtCCCD.Text = row.Cells["Mã BN (CCCD)"].Value?.ToString() ?? "";
+                txtTenBN.Text = row.Cells["Họ tên BN"].Value?.ToString() ?? "";
 
-                if (row.Cells[0].Value != null)
+                if (row.Cells["Ngày sinh"].Value != DBNull.Value && row.Cells["Ngày sinh"].Value != null)
                 {
-                    txtCCCD.Text = row.Cells[0].Value.ToString();
-                    txtTenBN.Text = row.Cells[1].Value.ToString();
-                    dtNgaySinh.Value = DateTime.Parse(row.Cells[2].Value.ToString());
-                    string gt = row.Cells[3].Value.ToString();
-                    if (gt == "Nam")
-                    {
-                        radioButton1.Checked = true;
-                    }
-                    else radioButton2.Checked = true;
-                    txtDiachi.Text = row.Cells[4].Value.ToString();
-                    txtDienThoai.Text = row.Cells[5].Value.ToString();
+                    dtNgaySinh.Value = Convert.ToDateTime(row.Cells["Ngày sinh"].Value);
                 }
+
+                string gt = row.Cells["Giới tính"].Value?.ToString() ?? "Nam";
+                if (gt == "Nam") radioButton1.Checked = true;
+                else radioButton2.Checked = true;
+
+                txtDiachi.Text = row.Cells["Địa chỉ BN"].Value?.ToString() ?? "";
+                txtDienThoai.Text = row.Cells["SĐT BN"].Value?.ToString() ?? "";
+
+                
+                txtBHYT.Text = row.Cells["Mã BHYT"].Value?.ToString() ?? "";
+
+                if (row.Cells["Ngày cấp BHYT"].Value != DBNull.Value && row.Cells["Ngày cấp BHYT"].Value != null)
+                    dtNgayCap.Value = Convert.ToDateTime(row.Cells["Ngày cấp BHYT"].Value);
+
+                if (row.Cells["Ngày hết hạn BHYT"].Value != DBNull.Value && row.Cells["Ngày hết hạn BHYT"].Value != null)
+                    dtNgayHet.Value = Convert.ToDateTime(row.Cells["Ngày hết hạn BHYT"].Value);
+
+                comboBox1.Text = row.Cells["Mức hưởng %"].Value?.ToString() ?? "";
+
+                
+                txtTenNN.Text = row.Cells["Họ tên Người nhà"].Value?.ToString() ?? "";
+                txtQH.Text = row.Cells["Quan hệ"].Value?.ToString() ?? "";
+                txtDC.Text = row.Cells["Địa chỉ NN"].Value?.ToString() ?? "";
+                txtDT.Text = row.Cells["SĐT NN"].Value?.ToString() ?? "";
             }
         }
     }

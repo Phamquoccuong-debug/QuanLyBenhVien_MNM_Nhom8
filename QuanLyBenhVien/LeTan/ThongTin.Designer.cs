@@ -224,7 +224,7 @@
             this.uiGroupBox1.MinimumSize = new System.Drawing.Size(1, 1);
             this.uiGroupBox1.Name = "uiGroupBox1";
             this.uiGroupBox1.Padding = new System.Windows.Forms.Padding(0, 32, 0, 0);
-            this.uiGroupBox1.Size = new System.Drawing.Size(392, 387);
+            this.uiGroupBox1.Size = new System.Drawing.Size(392, 371);
             this.uiGroupBox1.TabIndex = 5;
             this.uiGroupBox1.Text = "Bệnh nhân";
             this.uiGroupBox1.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -263,7 +263,7 @@
             // 
             // btnCNNN
             // 
-            this.btnCNNN.Location = new System.Drawing.Point(84, 319);
+            this.btnCNNN.Location = new System.Drawing.Point(115, 284);
             this.btnCNNN.Name = "btnCNNN";
             this.btnCNNN.Size = new System.Drawing.Size(129, 39);
             this.btnCNNN.TabIndex = 4;
@@ -359,7 +359,7 @@
             // 
             // btnCNBHYT
             // 
-            this.btnCNBHYT.Location = new System.Drawing.Point(134, 319);
+            this.btnCNBHYT.Location = new System.Drawing.Point(128, 281);
             this.btnCNBHYT.Name = "btnCNBHYT";
             this.btnCNBHYT.Size = new System.Drawing.Size(130, 39);
             this.btnCNBHYT.TabIndex = 5;
@@ -463,7 +463,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(692, 290);
+            this.dataGridView1.Size = new System.Drawing.Size(692, 274);
             this.dataGridView1.TabIndex = 11;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             // 
