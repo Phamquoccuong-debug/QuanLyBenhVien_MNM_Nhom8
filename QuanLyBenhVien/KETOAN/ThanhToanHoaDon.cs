@@ -138,8 +138,6 @@ namespace QuanLyBenhVien
                     string textHienThiThucThu = thucThuCuoiCung >= 0 ? "Thu thêm: " : "Hoàn trả: ";
                     document.ReplaceText("[ThucThu]", textHienThiThucThu + Math.Abs(thucThuCuoiCung).ToString("N0") + " đ");
 
-                    // Đổ tiền bằng chữ và thông tin người thu
-                    document.ReplaceText("[TienBangChu]", ChuyenSoThanhChu(Math.Abs(thucThuCuoiCung)));
                     document.ReplaceText("[NguoiThu]", "Nhân viên mã số: " + manv);
 
                     // XỬ LÝ ĐỔ CHI TIẾT BẢNG DỊCH VỤ VÀO WORD
@@ -168,8 +166,7 @@ namespace QuanLyBenhVien
                             newRow.Cells[1].Paragraphs[0].Append(tenDV);
                             newRow.Cells[2].Paragraphs[0].Append(soLuong.ToString());
                             newRow.Cells[3].Paragraphs[0].Append(donGia.ToString("N0"));
-                            newRow.Cells[4].Paragraphs[0].Append(thanhTien.ToString("N0"));
-
+ 
                             stt++;
                         }
                     }
