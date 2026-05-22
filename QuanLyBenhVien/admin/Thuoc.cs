@@ -22,16 +22,31 @@ namespace QuanLyBenhVien.admin
         }
         private void Thuoc_Load(object sender, EventArgs e)
         {
-            
+            LoadDuLieuComboBox();
         }
+        private void LoadDuLieuComboBox()
+        {
+            // 1. Nạp danh mục Đơn vị tính thông dụng cho thuốc
+            cboDonVi.Items.Clear();
+            cboDonVi.Items.Add("Viên");
+            cboDonVi.Items.Add("Vỉ");
+            cboDonVi.Items.Add("Hộp");
+            cboDonVi.Items.Add("Chai");
+            cboDonVi.Items.Add("Ống");
+            cboDonVi.Items.Add("Gói");
+            if (cboDonVi.Items.Count > 0) cboDonVi.SelectedIndex = 0; // Chọn sẵn mục đầu tiên
 
+          
+        }
         // Hàm bổ trợ xóa trống các ô nhập liệu trên giao diện
         private void XoaTrongCacO()
         {
             txtMa.Clear();
             txtTen.Clear();
-            txtDonVi.Clear();
             txtGia.Clear();
+            txtSoLuong.Clear(); // Xóa sạch chữ trong ô số lượng TextBox
+
+            if (cboDonVi.Items.Count > 0) cboDonVi.SelectedIndex = 0;
         }
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
@@ -43,8 +58,8 @@ namespace QuanLyBenhVien.admin
                 return;
             }
 
-            // Tìm chính xác theo Mã thuốc (số) hoặc tương đối theo Tên thuốc (chữ)
-            string query = @"SELECT TOP 1 MaThuoc, TenThuoc, DonViTinh, GiaHienTai 
+            // Câu lệnh SQL lấy đầy đủ thông tin bao gồm SoLuongTon từ Database mới
+            string query = @"SELECT TOP 1 MaThuoc, TenThuoc, DonViTinh, GiaHienTai, SoLuongTon 
                              FROM THUOC 
                              WHERE MaThuoc = @MaThuoc_So OR TenThuoc LIKE @Ten_Chu";
 
@@ -68,11 +83,13 @@ namespace QuanLyBenhVien.admin
                     {
                         if (reader.Read())
                         {
-                            // Đổ dữ liệu từ CSDL lên giao diện
+                            // Đổ dữ liệu tìm thấy lên giao diện màn hình
                             txtMa.Text = reader["MaThuoc"].ToString();
                             txtTen.Text = reader["TenThuoc"].ToString();
-                            txtDonVi.Text = reader["DonViTinh"].ToString();
-                            txtGia.Text = Convert.ToDecimal(reader["GiaHienTai"]).ToString("G29"); // Định dạng hiển thị số sạch gọn
+                            txtGia.Text = Convert.ToDecimal(reader["GiaHienTai"]).ToString("G29");
+
+                            cboDonVi.Text = reader["DonViTinh"].ToString(); // ComboBox hiển thị Đơn vị tính
+                            txtSoLuong.Text = reader["SoLuongTon"].ToString(); // TextBox hiển thị Số lượng tồn
 
                             MessageBox.Show("Đã tìm thấy thông tin thuốc!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -82,8 +99,6 @@ namespace QuanLyBenhVien.admin
                             XoaTrongCacO();
                         }
                     }
-
-                    // BẤT KỂ tìm thấy hay không, chạy xong câu lệnh là tự động dọn sạch ô tìm kiếm
                     txtTimKiem.Clear();
                 }
                 catch (Exception ex)
@@ -95,28 +110,35 @@ namespace QuanLyBenhVien.admin
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtTen.Text) || string.IsNullOrWhiteSpace(txtDonVi.Text) || string.IsNullOrWhiteSpace(txtGia.Text))
+            if (string.IsNullOrWhiteSpace(txtTen.Text) || string.IsNullOrWhiteSpace(cboDonVi.Text) || string.IsNullOrWhiteSpace(txtGia.Text) || string.IsNullOrWhiteSpace(txtSoLuong.Text))
             {
-                MessageBox.Show("Vui lòng điền đầy đủ thông tin Tên thuốc, Đơn vị tính và Giá tiền!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng điền đầy đủ thông tin Tên thuốc, Đơn vị tính, Số lượng và Giá tiền!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Ép kiểu kiểm tra giá tiền nhập vào có hợp lệ không
             if (!decimal.TryParse(txtGia.Text.Trim(), out decimal giaHienTai))
             {
                 MessageBox.Show("Giá hiện tại của thuốc phải ở định dạng số hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            // Kiểm tra bảo vệ ép kiểu: Người dùng phải gõ chữ số nguyên lớn hơn hoặc bằng 0 vào ô Số lượng
+            if (!int.TryParse(txtSoLuong.Text.Trim(), out int soLuongTon) || soLuongTon < 0)
+            {
+                MessageBox.Show("Số lượng thuốc phải là số nguyên hợp lệ và không được âm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(str))
             {
-                string query = @"INSERT INTO THUOC (TenThuoc, DonViTinh, GiaHienTai) 
-                                 VALUES (@TenThuoc, @DonViTinh, @GiaHienTai)";
+                string query = @"INSERT INTO THUOC (TenThuoc, DonViTinh, GiaHienTai, SoLuongTon) 
+                                 VALUES (@TenThuoc, @DonViTinh, @GiaHienTai, @SoLuongTon)";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@TenThuoc", txtTen.Text.Trim());
-                cmd.Parameters.AddWithValue("@DonViTinh", txtDonVi.Text.Trim());
+                cmd.Parameters.AddWithValue("@DonViTinh", cboDonVi.Text.Trim());
                 cmd.Parameters.AddWithValue("@GiaHienTai", giaHienTai);
+                cmd.Parameters.AddWithValue("@SoLuongTon", soLuongTon);
 
                 try
                 {
@@ -140,7 +162,7 @@ namespace QuanLyBenhVien.admin
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(txtTen.Text) || string.IsNullOrWhiteSpace(txtDonVi.Text) || string.IsNullOrWhiteSpace(txtGia.Text))
+            if (string.IsNullOrWhiteSpace(txtTen.Text) || string.IsNullOrWhiteSpace(cboDonVi.Text) || string.IsNullOrWhiteSpace(txtGia.Text) || string.IsNullOrWhiteSpace(txtSoLuong.Text))
             {
                 MessageBox.Show("Không được để trống thông tin khi cập nhật thuốc!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -152,17 +174,24 @@ namespace QuanLyBenhVien.admin
                 return;
             }
 
+            if (!int.TryParse(txtSoLuong.Text.Trim(), out int soLuongTon) || soLuongTon < 0)
+            {
+                MessageBox.Show("Số lượng cập nhật phải là số nguyên hợp lệ và không được âm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(str))
             {
                 string query = @"UPDATE THUOC 
-                                 SET TenThuoc = @TenThuoc, DonViTinh = @DonViTinh, GiaHienTai = @GiaHienTai 
+                                 SET TenThuoc = @TenThuoc, DonViTinh = @DonViTinh, GiaHienTai = @GiaHienTai, SoLuongTon = @SoLuongTon 
                                  WHERE MaThuoc = @MaThuoc";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@MaThuoc", Convert.ToInt32(txtMa.Text.Trim()));
                 cmd.Parameters.AddWithValue("@TenThuoc", txtTen.Text.Trim());
-                cmd.Parameters.AddWithValue("@DonViTinh", txtDonVi.Text.Trim());
+                cmd.Parameters.AddWithValue("@DonViTinh", cboDonVi.Text.Trim());
                 cmd.Parameters.AddWithValue("@GiaHienTai", giaHienTai);
+                cmd.Parameters.AddWithValue("@SoLuongTon", soLuongTon);
 
                 try
                 {
