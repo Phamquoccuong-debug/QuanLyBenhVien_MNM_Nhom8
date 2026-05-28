@@ -87,6 +87,7 @@
             this.uiNavMenu1.Size = new System.Drawing.Size(252, 725);
             this.uiNavMenu1.TabIndex = 6;
             this.uiNavMenu1.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.uiNavMenu1.MenuItemClick += new Sunny.UI.UINavMenu.OnMenuItemClick(this.uiNavMenu1_MenuItemClick);
             // 
             // CRUD
             // 

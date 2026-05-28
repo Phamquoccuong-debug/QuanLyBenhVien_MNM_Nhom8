@@ -32,9 +32,11 @@
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.pnlContent = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnXoaDV = new System.Windows.Forms.Button();
             this.btnThemDV = new System.Windows.Forms.Button();
             this.btnCapNhat = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.txtNoiDung = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -51,8 +53,6 @@
             this.btnTimKiem = new System.Windows.Forms.Button();
             this.label16 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.btnXoaDV = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
             this.pnlContent.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -89,6 +89,17 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(673, 545);
             this.panel2.TabIndex = 7;
+            // 
+            // btnXoaDV
+            // 
+            this.btnXoaDV.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnXoaDV.Location = new System.Drawing.Point(198, 226);
+            this.btnXoaDV.Name = "btnXoaDV";
+            this.btnXoaDV.Size = new System.Drawing.Size(117, 48);
+            this.btnXoaDV.TabIndex = 10;
+            this.btnXoaDV.Text = "Xóa Dịch Vụ";
+            this.btnXoaDV.UseVisualStyleBackColor = true;
+            this.btnXoaDV.Click += new System.EventHandler(this.btnXoaDV_Click);
             // 
             // btnThemDV
             // 
@@ -132,6 +143,17 @@
             this.groupBox4.Size = new System.Drawing.Size(493, 545);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(356, 219);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(38, 20);
+            this.label8.TabIndex = 21;
+            this.label8.Text = "vnd";
+            this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // label6
             // 
@@ -245,6 +267,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1166, 148);
             this.panel1.TabIndex = 1;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // txtTimKiem
             // 
@@ -273,28 +296,6 @@
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(0, 25);
             this.label16.TabIndex = 0;
-            // 
-            // btnXoaDV
-            // 
-            this.btnXoaDV.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnXoaDV.Location = new System.Drawing.Point(198, 226);
-            this.btnXoaDV.Name = "btnXoaDV";
-            this.btnXoaDV.Size = new System.Drawing.Size(117, 48);
-            this.btnXoaDV.TabIndex = 10;
-            this.btnXoaDV.Text = "Xóa Dịch Vụ";
-            this.btnXoaDV.UseVisualStyleBackColor = true;
-            this.btnXoaDV.Click += new System.EventHandler(this.btnXoaDV_Click);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(356, 219);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(38, 20);
-            this.label8.TabIndex = 21;
-            this.label8.Text = "vnd";
-            this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // DichVu
             // 

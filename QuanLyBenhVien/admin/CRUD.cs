@@ -16,5 +16,10 @@ namespace QuanLyBenhVien.admin
         {
             InitializeComponent();
         }
+
+        private void uiNavMenu1_MenuItemClick(TreeNode node, Sunny.UI.NavMenuItem item, int pageIndex)
+        {
+
+        }
     }
 }
